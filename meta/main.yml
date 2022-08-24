@@ -1,0 +1,12 @@
+---
+
+galaxy_info:
+  author: Mattias Jonsson
+  description: Installs and configures virt-who on supported distributions.
+  min_ansible_version: 2.9.27
+  role_name: ansible_role_virtwho
+  license: MIT
+  platforms:
+  - name: EL
+    versions:
+    - "8"
