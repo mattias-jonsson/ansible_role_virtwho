@@ -1,0 +1,77 @@
+---
+
+- name: create log directory for virt-who service
+  become: true
+  file:
+    path: /var/log/virt-who
+    state: directory
+    owner: root
+    group: root
+    mode: "0700"
+
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+
+- set_fact:
+    installed_virtwho_version: "{{ ansible_facts.packages['virt-who']| map(attribute='version') | list | join('\n') }}"
+
+- name: encrypt password for each hypervisor and register to variable
+  become: true
+  shell: "{{ ansible_role_virtwho_passwdbin }} -p '{{ item.password }}' 2> /dev/null"
+  register: encrypted_passwords
+  failed_when: false
+  changed_when: false
+  with_items: 
+    - "{{ ansible_role_virtwho_hypervisor_config }}"
+  no_log: true
+
+- name: set fact for each encrypted password
+  become: true
+  set_fact: {"{{ item.item.name }}_encryptedpassword": "{{ item.stdout }}"}
+  with_items: 
+    - "{{ encrypted_passwords.results }}"
+  no_log: true
+
+- name: create sysconfig configuration from template
+  become: true
+  template:
+    src: virt-whosysconfig.j2
+    dest: /etc/sysconfig/virt-who
+    owner: root
+    group: root
+    mode: "0600"
+    backup: no
+  notify: restart virt-who
+
+- name: create global configuration from template
+  become: true
+  template:
+    src: virt-whoglobal.conf.j2
+    dest: /etc/virt-who.conf
+    owner: root
+    group: root
+    mode: "0600"
+    backup: no
+  notify: restart virt-who
+
+- name: create unique config for each hypervisor
+  become: true
+  template:
+    src: virt-who.conf.j2
+    dest: /etc/virt-who.d/{{ item.name }}.conf
+    owner: root
+    group: root
+    mode: "0600"
+    backup: no
+  with_items: 
+    - "{{ ansible_role_virtwho_hypervisor_config }}"
+  no_log: true
+  notify: restart virt-who
+
+- name: check that service is enabled and started
+  become: true
+  service:
+    name: virt-who
+    state: started
+    enabled: yes

@@ -1,0 +1,9 @@
+---
+
+- name: install packages
+  become: true
+  yum:
+    name: "{{ ansible_role_virtwho_package }}"
+    state: present
+    lock_timeout: 300
+    update_cache: yes

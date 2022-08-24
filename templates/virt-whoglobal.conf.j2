@@ -1,0 +1,19 @@
+## {{ ansible_managed }}
+[global]
+
+interval=3600
+#reporter_id=
+debug=False
+oneshot=False
+log_per_config=True
+log_dir=/var/log/virt-who
+
+{% if installed_virtwho_version is version('0.30.0', '>=') %}
+[system_environment]
+{% if ansible_role_virtwho_global_config['http_proxy'] is defined and ansible_role_virtwho_global_config['http_proxy'] %}
+http_proxy={{ ansible_role_virtwho_global_config['http_proxy'] }}
+{% endif %}
+{% if ansible_role_virtwho_global_config['no_proxy'] %}
+no_proxy=*
+{% endif %}
+{% endif %}

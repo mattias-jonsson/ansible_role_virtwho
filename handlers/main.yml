@@ -1,0 +1,6 @@
+---
+- name: restart virt-who
+  become: True
+  service:
+    name: virt-who
+    state: restarted

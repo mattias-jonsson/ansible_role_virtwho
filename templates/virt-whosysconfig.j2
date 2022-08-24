@@ -1,0 +1,23 @@
+## {{ ansible_managed }}
+
+# Enable debugging output.
+VIRTWHO_DEBUG=0
+
+# Send the list of guest IDs and exit immediately.
+#VIRTWHO_ONE_SHOT=0
+
+# Acquire list of virtual guest each N seconds, only sends if changes detected
+# 0 means default configuration.
+#VIRTWHO_INTERVAL=0
+
+{% if installed_virtwho_version is version('0.30.0', '<') %}
+
+{% if ansible_role_virtwho_global_config['http_proxy'] is defined and ansible_role_virtwho_global_config['http_proxy'] %}
+HTTP_PROXY={{ ansible_role_virtwho_global_config['http_proxy'] }}
+{% endif %}
+
+{% if ansible_role_virtwho_global_config['no_proxy'] %}
+NO_PROXY=*
+{% endif %}
+
+{% endif %}

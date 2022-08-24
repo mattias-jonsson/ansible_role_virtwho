@@ -1,0 +1,4 @@
+---
+
+ansible_role_virtwho_package: virt-who
+ansible_role_virtwho_passwdbin: /usr/bin/virt-who-password

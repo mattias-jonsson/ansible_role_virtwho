@@ -1,0 +1,21 @@
+## {{ ansible_managed }}
+
+[{{ item.name }}]
+type={{ item.type }}
+server={{ item.server }}
+username={{ item.username }}
+encrypted_password={{ lookup('vars', item.name + '_encryptedpassword') }}
+owner={{ item.owner }}
+hypervisor_id={{ item.hypervisor_id }}
+{% if item.exclude_hosts is defined and item.exclude_hosts %}
+exclude_hosts: {{ item.exclude_hosts }}
+{% endif %}
+{% if item.filter_hosts is defined and item.filter_hosts %}
+filter_hosts: {{ item.filter_hosts }}
+{% endif %}
+{% if item.type | lower == "kubevirt" and item.kubeconfig is defined and item.kubeconfig %}
+kubeconfig={{ item.kubeconfig }}
+{% endif %}
+{% if item.type | lower == "kubevirt" and item.kubeversion is defined and item.kubeversion %}
+kubeversion={{ item.kubeversion }}
+{% endif %}
