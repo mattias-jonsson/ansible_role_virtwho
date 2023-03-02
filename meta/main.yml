@@ -7,6 +7,6 @@ galaxy_info:
   role_name: ansible_role_virtwho
   license: MIT
   platforms:
-  - name: EL
-    versions:
-    - "8"
+    - name: EL
+      versions:
+        - "8"

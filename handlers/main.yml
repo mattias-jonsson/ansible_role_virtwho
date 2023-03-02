@@ -1,6 +1,6 @@
 ---
-- name: restart virt-who
-  become: True
-  service:
+- name: Restart virt-who
+  become: true
+  ansible.builtin.service:
     name: virt-who
     state: restarted
